@@ -3,7 +3,7 @@ services:
   botpopup:
     image: node:7
     working_dir: /app
-    command: bash -c "npm install && node server.js"
+    command: "bash ./start.sh"
     env_file:
       - ./config/common.env
     ports:
