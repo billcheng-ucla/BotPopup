@@ -1,0 +1,15 @@
+version: '2.2'
+services:
+
+  core-client:
+    image: node:7
+    working_dir: /app
+    command: bash -c "npm install && node server.js"
+    init: true
+    env_file:
+      - ./config/common.env
+    volumes:
+      - ./:/app
+      - node-modules-cache:/app/node_modules
+volumes:
+  node-modules-cache:
