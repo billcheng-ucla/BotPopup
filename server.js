@@ -3,6 +3,7 @@ const express = require('express');
 const app = express();
 const basicAuth = require('express-basic-auth');
 const dashbot = require('dashbot')(config.DASHBOT_API_KEY).google;
+const bodyParser = require('body-parser');
 
 console.log('BotPopup initiated');
 
@@ -10,11 +11,14 @@ app.use(basicAuth({
   users: { 'admin': 'supersecret' }
 }));
 
+app.use(bodyParser.json());
+
 app.get('/', (request, response) => {
   response.send('hello world. but this is not the asdf');
 });
 
 app.post('/', (request, response) => {
+  dashbot.logIncoming(request.body);
   const sampleResponse = {
     speech: "Thanks, you order has been received.",
     displayText: "Thanks, you order has been received.",
@@ -22,6 +26,7 @@ app.post('/', (request, response) => {
     contextOut: [],
     source: ""
   }
+  dashbot.logOutgoing(request.body, sampleResponse);
   response.json(sampleResponse);
 });
 
