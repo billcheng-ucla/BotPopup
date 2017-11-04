@@ -1,0 +1,23 @@
+{
+  "name": "botpopup",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/billcheng-ucla/BotPopup.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/billcheng-ucla/BotPopup/issues"
+  },
+  "homepage": "https://github.com/billcheng-ucla/BotPopup#readme",
+  "dependencies": {
+    "actions-on-google": "^1.5.1",
+    "dashbot": "^9.4.0"
+  }
+}
