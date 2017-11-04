@@ -19,6 +19,7 @@
   "dependencies": {
     "actions-on-google": "^1.5.1",
     "dashbot": "^9.4.0",
-    "express": "^4.16.2"
+    "express": "^4.16.2",
+    "ngrok": "^2.2.23"
   }
 }

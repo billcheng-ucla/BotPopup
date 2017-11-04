@@ -3,7 +3,7 @@ services:
   botpopup:
     image: node:7
     working_dir: /app
-    command: bash -c "npm install && node server.js"
+    command: bash -c "npm install && node server.js && ngrok http 8080"
     init: true
     env_file:
       - ./config/common.env
