@@ -1,10 +1,9 @@
-version: '2.2'
+version: '3'
 services:
   botpopup:
     image: node:7
     working_dir: /app
-    command: bash -c "npm install && node server.js && ngrok http 8080"
-    init: true
+    command: bash -c "npm install && node server.js"
     env_file:
       - ./config/common.env
     ports:
@@ -12,5 +11,12 @@ services:
     volumes:
       - ./:/app
       - node-modules-cache:/app/node_modules
+  ngrok:
+    image: fnichol/ngrok
+    command: "botpopup:8080"
+    links:
+      - botpopup:http
+    ports:
+      - 4040:4040
 volumes:
   node-modules-cache:

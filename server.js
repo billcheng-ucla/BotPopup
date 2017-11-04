@@ -14,4 +14,4 @@ app.post('/', (request, response) => {
   dashbot.configHandler(assistant);
 });
 
-app.listen(process.env.SERVER_PORT, () => console.log(`BotPopup listening on port ${process.env.SERVER_PORT}!`))
+app.listen(process.env.HTTP_PORT, () => console.log(`BotPopup listening on port ${process.env.HTTP_PORT}!`))
