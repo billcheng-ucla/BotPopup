@@ -5,7 +5,11 @@ const DialogflowApp = require('actions-on-google').DialogflowApp;
 
 console.log('BotPopup initiated');
 
-app.post('/', function (request, response) {
+app.get('/', (request, response) => {
+  response.send('hello world');
+});
+
+app.post('/', (request, response) => {
   const assistant = new DialogflowApp({request: request, response: response});
   dashbot.configHandler(assistant);
 });
