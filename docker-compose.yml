@@ -1,7 +1,7 @@
 version: '3'
 services:
   botpopup:
-    image: node:7
+    image: node:9
     working_dir: /app
     command: "bash ./start.sh"
     env_file:
