@@ -7,6 +7,8 @@ services:
     init: true
     env_file:
       - ./config/common.env
+    ports:
+      - 8080:8080
     volumes:
       - ./:/app
       - node-modules-cache:/app/node_modules

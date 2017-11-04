@@ -9,3 +9,5 @@ app.post('/', function (request, response) {
   const assistant = new DialogflowApp({request: request, response: response});
   dashbot.configHandler(assistant);
 });
+
+app.listen(8080, () => console.log('BotPopup listening on port 8080!'))
