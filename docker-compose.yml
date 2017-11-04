@@ -1,7 +1,6 @@
 version: '2.2'
 services:
-
-  core-client:
+  botpopup:
     image: node:7
     working_dir: /app
     command: bash -c "npm install && node server.js"
