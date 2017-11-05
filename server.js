@@ -43,7 +43,7 @@ app.post('/', (request, response) => {
   let dialogFlow = new DialogflowApp({ request, response });
   let order = dialogFlow.buildOrder('1234').setCart(dialogFlow.buildCart().setMerchant('test_merchant', 'Test Merchant'));
   console.log('Order created', order);
-  var item, size;
+  var item, size = 'regular';
   switch (request.body.result.metadata.intentName) {
     case 'order_beverage':
       channel = 'beverage';
