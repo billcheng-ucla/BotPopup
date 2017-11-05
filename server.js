@@ -31,11 +31,11 @@ app.post('/confirm_order', (req, response) => {
   });
 });
 
-// app.use(basicAuth({
-//   users: {
-//     'admin': 'supersecret'
-//   }
-// }));
+ app.use(basicAuth({
+   users: {
+     'admin': 'supersecret'
+   }
+ }));
 
 app.post('/', (request, response) => {
   // Fullfillment endpoint DialogFlow calls after 'coffee_order' intent
