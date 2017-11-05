@@ -6,6 +6,8 @@ const dashbot = require('dashbot')(config.DASHBOT_API_KEY).google;
 const bodyParser = require('body-parser');
 const slackHelper = require('./slack_helper');
 const request = require('request');
+const DialogflowApp = require('actions-on-google').DialogflowApp;
+const transaction = require('./transaction');
 
 console.log('BotPopup initiated');
 app.use(bodyParser.json());
@@ -18,42 +20,54 @@ app.get('/', (request, response) => {
 });
 
 app.post('/confirm_order', (req, response) => {
+  //const rawPayload = JSON.parse(req.body.payload);
+  //const payload = rawPayload.callback_id;
+
+  let orderUpdate = new OrderUpdate(actionOrderId, false)
+    .setOrderState(Transactions.OrderState.FULFILLED,
+      'Order has been delivered!')
+    .setUpdateTime(currentTime);
+
+  let bearer = 'Bearer ' + tokens.access_token;
+  let options = {
+    method: 'POST',
+    url: 'https://actions.googleapis.com/v2/conversations:send',
+    headers: {
+      'Authorization': bearer
+    },
+    body: {
+      'custom_push_message': {
+        'order_update': orderUpdate
+      }
+    },
+    json: true
+  };
+  request.post(options, function (err, httpResponse, body) {
+    if (err) {
+      console.log(err);
+      return;
+    }
+    console.log(body);
+  });
   response.json({
     'text': 'Order confirmed'
   });
+});
 
-  const messageToGA = {
-    event:{
-      name: "talk_user",
-      data:{
-        merchant_action: "confirm"
-      },
-      timezone: "America/New_York",
-      lang: "en",
-      sessionId: req.callback_id,
-    }
-  };
 
-  request.post(
-    {
-      method: 'POST',
-      url: config.DIALOGFLOW_URL,
-      headers: {
-        'Authorization': `Bearer ${config.DIALOGFLOW_ACCESS_TOKEN}`,
-        'content-type': 'application/json'
-      },
-      body: JSON.stringify(messageToGA)
-    },
-    (error, response, body) => {
-      if (!error && response.statusCode == 200) {
-        console.log('success');
-        console.log(body)
-      } else {
-        console.error('error');
-        console.error(error);
-      }
-    }
-  );
+app.get('/auth', (req, res) => {
+  const client_id = req.query.client_id;
+  const redirect_uri = req.query.redirect_uri;
+  const state = req.query.state;
+  const response_type = req.query.response_type;
+
+  if (!client_id == config.CLIENT_ID) {
+
+  }
+
+  if (!redirect_uri.match(/oauth-redirect\.googleusercontent\.com\/r\/.*/)) {
+
+  }
 });
 
 app.use(basicAuth({
@@ -61,14 +75,14 @@ app.use(basicAuth({
 }));
 
 app.post('/', (request, response) => {
-  const sessionId = request.body.sessionId;
+  const payload = request;
   slackHelper({
     "text": "A customer just ordered a coffee. Please confirm.",
     "attachments": [
       {
         "text": "Confirm Order?",
         "fallback": "Failed to confirm order",
-        "callback_id": sessionId,
+        "callback_id": 'order_callback_id',
         "color": "#3AA3E3",
         "attachment_type": "default",
         "actions": [
@@ -95,6 +109,8 @@ app.post('/', (request, response) => {
       }
     ]
   });
+
+
   dashbot.logIncoming(request.body);
   const sampleResponse = {
     speech: "Thanks, you order has been received.",
@@ -105,10 +121,6 @@ app.post('/', (request, response) => {
   }
   dashbot.logOutgoing(request.body, sampleResponse);
   response.json(sampleResponse);
-});
-
-app.post('/confirm_order', (request, response) => {
-  console.log(request);
 });
 
 app.post('/talk_user', (request, response) => {

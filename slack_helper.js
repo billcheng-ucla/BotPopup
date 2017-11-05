@@ -2,6 +2,7 @@ const config = require('./config/config');
 const request = require('request');
 
 const slackHelper = (messageToSlack) => {
+  console.log(JSON.stringify(messageToSlack));
   request.post(
     {
       method: 'POST',
