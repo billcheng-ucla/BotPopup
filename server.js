@@ -9,6 +9,7 @@ const request = require('request');
 const DialogflowApp = require('actions-on-google').DialogflowApp;
 // const transaction = require('./transaction');
 // const orderUpdate = require('./order-update');
+const Transactions = require('actions-on-google').Transactions.TransactionValues;
 const OrderUpdate = require('actions-on-google').Transactions.OrderUpdate;
 
 console.log('BotPopup initiated');
@@ -22,6 +23,7 @@ app.get('/', (request, response) => {
 });
 
 app.post('/confirm_order', (req, response) => {
+  let actionOrderId = '1234';
   //const rawPayload = JSON.parse(req.body.payload);
   //const payload = rawPayload.callback_id;
   console.log('Confirm order received', req.body);
