@@ -41,7 +41,7 @@ const orderUpdate = () => {
     /* CANCELLED, FULFILLED, REJECTED, or RETURNED
    are the states that we notify via push, and only once per state change */
 
-    let orderUpdate = new OrderUpdate(actionOrderId, false)
+    let orderUpdate = new OrderUpdate(actionOrderId, true)
       .setOrderState(Transactions.OrderState.FULFILLED,
         'Order has been delivered!')
       .setUpdateTime(currentTime);

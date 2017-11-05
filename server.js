@@ -8,7 +8,7 @@ const slackHelper = require('./slack_helper');
 const request = require('request');
 const DialogflowApp = require('actions-on-google').DialogflowApp;
 // const transaction = require('./transaction');
-// const orderUpdate = require('./order-update');
+ const orderUpdate = require('./order-update');
 const Transactions = require('actions-on-google').Transactions.TransactionValues;
 const OrderUpdate = require('actions-on-google').Transactions.OrderUpdate;
 
@@ -27,37 +27,7 @@ app.post('/confirm_order', (req, response) => {
   //const rawPayload = JSON.parse(req.body.payload);
   //const payload = rawPayload.callback_id;
   console.log('Confirm order received', req.body);
-  // orderUpdate();
-  let orderUpdate = new OrderUpdate(actionOrderId, true)
-  .setOrderState(Transactions.OrderState.FULFILLED,
-    'Order has been confirmed!')
-  console.log('Order Updated');
-  // response.json({
-  //   'text': 'Order confirmed'
-  // });
-  let bearer = 'Bearer ' + tokens.access_token;
-  let options = {
-    method: 'POST',
-    url: 'https://actions.googleapis.com/v2/conversations:send',
-    headers: {
-      'Authorization': bearer
-    },
-    body: {
-      'custom_push_message': {
-        'order_update': orderUpdate
-      }
-    },
-    json: true
-  };
-  request.post(options, function (err, httpResponse, body) {
-    if (err) {
-      console.log(err);
-      return;
-    }
-    console.log('Post conversation succes');
-    console.log(body);
-  });
-
+  orderUpdate();
 });
 
  app.use(basicAuth({
