@@ -4,6 +4,7 @@ const app = express();
 const basicAuth = require('express-basic-auth');
 const dashbot = require('dashbot')(config.DASHBOT_API_KEY).google;
 const bodyParser = require('body-parser');
+const slackHelper = require('./slack_helper');
 
 console.log('BotPopup initiated');
 
@@ -18,6 +19,7 @@ app.get('/', (request, response) => {
 });
 
 app.post('/', (request, response) => {
+  slackHelper({"text":"Hello, World!"});
   dashbot.logIncoming(request.body);
   const sampleResponse = {
     speech: "Thanks, you order has been received.",
