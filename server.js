@@ -53,6 +53,7 @@ app.post('/', (request, response) => {
   dialogFlow.askForTransactionDecision(order);
   // let googleOrderId = dialogFlow.getTransactionDecision().order.googleOrderId;
   // console.log('googleOrderId', googleOrderId);  
+  dialofFlow.ask('Order received!');
 
   const payload = request;
   slackHelper({
