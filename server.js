@@ -7,12 +7,10 @@ const bodyParser = require('body-parser');
 const slackHelper = require('./slack_helper');
 
 console.log('BotPopup initiated');
-
-app.use(basicAuth({
-  users: { 'admin': 'supersecret' }
-}));
-
 app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({
+  extended: false
+}));
 
 app.get('/', (request, response) => {
   response.send('hello world. but this is not the asdf');
@@ -67,5 +65,18 @@ app.post('/', (request, response) => {
 app.post('/confirm_order', (request, response) => {
   console.log(request);
 });
+
+app.post('/talk_user', (request, response) => {
+  console.log(request.body);
+  response.end();
+});
+
+app.post('/cancel_order', (request, response) => {
+  console.log(request.body);
+});
+
+app.use(basicAuth({
+  users: { 'admin': 'supersecret' }
+}));
 
 app.listen(config.HTTP_PORT, () => console.log(`BotPopup listening on port ${config.HTTP_PORT}!`))
