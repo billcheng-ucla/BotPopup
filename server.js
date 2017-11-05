@@ -32,9 +32,32 @@ app.post('/confirm_order', (req, response) => {
   .setOrderState(Transactions.OrderState.FULFILLED,
     'Order has been confirmed!')
   console.log('Order Updated');
-  response.json({
-    'text': 'Order confirmed'
+  // response.json({
+  //   'text': 'Order confirmed'
+  // });
+  let bearer = 'Bearer ' + tokens.access_token;
+  let options = {
+    method: 'POST',
+    url: 'https://actions.googleapis.com/v2/conversations:send',
+    headers: {
+      'Authorization': bearer
+    },
+    body: {
+      'custom_push_message': {
+        'order_update': orderUpdate
+      }
+    },
+    json: true
+  };
+  request.post(options, function (err, httpResponse, body) {
+    if (err) {
+      console.log(err);
+      return;
+    }
+    console.log('Post conversation succes');
+    console.log(body);
   });
+
 });
 
  app.use(basicAuth({
