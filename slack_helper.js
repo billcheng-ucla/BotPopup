@@ -5,7 +5,7 @@ const slackHelper = (messageToSlack) => {
   request.post(
     {
       method: 'POST',
-      url: `${config.SLACK_WEBHOOK_HOST}${config.SLACK_WEBHOOK_ORDERS_CHANNEL}`,
+      url: `https://${config.SLACK_WEBHOOK_HOST}${config.SLACK_WEBHOOK_ORDERS_CHANNEL}`,
       headers: {
         'content-type': 'application/json'
       },
@@ -14,6 +14,8 @@ const slackHelper = (messageToSlack) => {
     (error, response, body) => {
       if (!error && response.statusCode == 200) {
         console.log(body)
+      } else {
+        console.error(error);
       }
     }
   );
