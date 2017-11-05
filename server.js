@@ -26,8 +26,11 @@ app.post('/confirm_order', (req, response) => {
     event:{
       name: "talk_user",
       data:{
-        sessionId: req.callback_id
-      }
+        merchant_action: "confirm"
+      },
+      timezone: "America/New_York",
+      lang: "en",
+      sessionId: req.callback_id,
     }
   };
 
