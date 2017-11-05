@@ -43,11 +43,29 @@ app.post('/', (request, response) => {
   let dialogFlow = new DialogflowApp({ request, response });
   let order = dialogFlow.buildOrder('1234').setCart(dialogFlow.buildCart().setMerchant('test_merchant', 'Test Merchant'));
   console.log('Order created', order);
-
+  var item, size;
+  switch (request.body.result.metadata.intentName) {
+    case 'order_beverage':
+      channel = 'beverage';
+      item = request.body.result.parameters.beverages;
+      size = ` size ${request.body.result.parameters.size}`;
+      break;
+    case 'order_food':
+      channel = 'food';
+      item = request.body.result.parameters.food;
+      break;
+    default:
+      channel = 'orders';
+      break;
+  }
   const payload = request;
-  slackHelper({
-    "text": `A customer just ordered a coffee. Please confirm.`,
-    "attachments": [{
+  slackHelper(channel, {
+    "text": `A customer just ordered ${item} ${size}`,
+    "attachments": [
+      {
+        "text": `${size}`
+      },
+      {
       "text": "Confirm Order?",
       "fallback": "Failed to confirm order",
       "callback_id": 'order_callback_id',

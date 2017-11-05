@@ -1,12 +1,23 @@
 const config = require('./config/config');
 const request = require('request');
 
-const slackHelper = (messageToSlack) => {
+const slackHelper = (channel, messageToSlack) => {
   console.log(JSON.stringify(messageToSlack));
-  request.post(
-    {
+  var url;
+  switch (channel) {
+    case 'food':
+      url = `https://${config.SLACK_WEBHOOK_HOST}${config.SLACK_WEBHOOK_FOOD_CHANNEL}`;
+      break;
+    case 'beverage':
+      url = `https://${config.SLACK_WEBHOOK_HOST}${config.SLACK_WEBHOOK_BEVERAGES_CHANNEL}`;
+      break;
+    default:
+      url = `https://${config.SLACK_WEBHOOK_HOST}${config.SLACK_WEBHOOK_ORDERS_CHANNEL}`;
+      break;
+  }
+  request.post({
       method: 'POST',
-      url: `https://${config.SLACK_WEBHOOK_HOST}${config.SLACK_WEBHOOK_ORDERS_CHANNEL}`,
+      url: url,
       headers: {
         'content-type': 'application/json'
       },
