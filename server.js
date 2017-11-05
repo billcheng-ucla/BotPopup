@@ -27,13 +27,14 @@ app.use(basicAuth({
 }));
 
 app.post('/', (request, response) => {
+  const sessionId = request.body.sessionId;
   slackHelper({
     "text": "A customer just ordered a coffee. Please confirm.",
     "attachments": [
       {
         "text": "Confirm Order?",
         "fallback": "Failed to confirm order",
-        "callback_id": "order_confirm_id",
+        "callback_id": sessionId,
         "color": "#3AA3E3",
         "attachment_type": "default",
         "actions": [
