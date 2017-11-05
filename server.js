@@ -7,8 +7,9 @@ const bodyParser = require('body-parser');
 const slackHelper = require('./slack_helper');
 const request = require('request');
 const DialogflowApp = require('actions-on-google').DialogflowApp;
-const transaction = require('./transaction');
-const orderUpdate = require('./order-update');
+// const transaction = require('./transaction');
+// const orderUpdate = require('./order-update');
+const OrderUpdate = require('actions-on-google').Transactions.OrderUpdate;
 
 console.log('BotPopup initiated');
 app.use(bodyParser.json());
