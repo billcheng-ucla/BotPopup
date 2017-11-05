@@ -41,17 +41,12 @@ app.post('/', (request, response) => {
   // It sends the order to slack and create the order in Google Actions Transactions
   console.log('Request', request.body);
   let dialogFlow = new DialogflowApp({ request, response });
-  let order = dialogFlow.buildOrder('1234');
+  let order = dialogFlow.buildOrder('1234').setCart(dialogFlow.buildCart().setMerchant('test_merchant', 'Test Merchant'));
   console.log('Order created', order);
-  //dialogFlow.askForTransactionDecision(order);
-  dialogFlow.ask('Order received!');
-
-  // let googleOrderId = dialogFlow.getTransactionDecision().order.googleOrderId;
-  // console.log('googleOrderId', googleOrderId);  
 
   const payload = request;
   slackHelper({
-    "text": "A customer just ordered a coffee. Please confirm.",
+    "text": `A customer just ordered a coffee. Please confirm.`,
     "attachments": [{
       "text": "Confirm Order?",
       "fallback": "Failed to confirm order",
@@ -91,7 +86,7 @@ app.post('/', (request, response) => {
     source: ""
   }
   dashbot.logOutgoing(request.body, sampleResponse);
-  //response.json(sampleResponse);
+  response.json(sampleResponse);
 });
 
 app.post('/talk_user', (request, response) => {
