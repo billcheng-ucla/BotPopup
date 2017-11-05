@@ -23,9 +23,12 @@ app.get('/', (request, response) => {
 app.post('/confirm_order', (req, response) => {
   //const rawPayload = JSON.parse(req.body.payload);
   //const payload = rawPayload.callback_id;
-
-  orderUpdate();
-
+  console.log('Confirm order received', req.body);
+  // orderUpdate();
+  let orderUpdate = new OrderUpdate(actionOrderId, false)
+  .setOrderState(Transactions.OrderState.FULFILLED,
+    'Order has been confirmed!')
+  console.log('Order Updated');
   response.json({
     'text': 'Order confirmed'
   });
@@ -40,9 +43,13 @@ app.post('/confirm_order', (req, response) => {
 app.post('/', (request, response) => {
   // Fullfillment endpoint DialogFlow calls after 'coffee_order' intent
   // It sends the order to slack and create the order in Google Actions Transactions
+  console.log('Request', request.body);
   const dialogFlow = new DialogflowApp({ request, response });
   let order = dialogFlow.buildOrder('1234');
+  console.log('Order created', order);
   dialogFlow.askForTransactionDecision(order);
+  // let googleOrderId = dialogFlow.getTransactionDecision().order.googleOrderId;
+  // console.log('googleOrderId', googleOrderId);  
 
   const payload = request;
   slackHelper({
