@@ -8,6 +8,7 @@ const slackHelper = require('./slack_helper');
 const request = require('request');
 const DialogflowApp = require('actions-on-google').DialogflowApp;
 const transaction = require('./transaction');
+const orderUpdate = require('./order-update');
 
 console.log('BotPopup initiated');
 app.use(bodyParser.json());
@@ -23,51 +24,11 @@ app.post('/confirm_order', (req, response) => {
   //const rawPayload = JSON.parse(req.body.payload);
   //const payload = rawPayload.callback_id;
 
-  let orderUpdate = new OrderUpdate(actionOrderId, false)
-    .setOrderState(Transactions.OrderState.FULFILLED,
-      'Order has been delivered!')
-    .setUpdateTime(currentTime);
+  orderUpdate();
 
-  let bearer = 'Bearer ' + tokens.access_token;
-  let options = {
-    method: 'POST',
-    url: 'https://actions.googleapis.com/v2/conversations:send',
-    headers: {
-      'Authorization': bearer
-    },
-    body: {
-      'custom_push_message': {
-        'order_update': orderUpdate
-      }
-    },
-    json: true
-  };
-  request.post(options, function (err, httpResponse, body) {
-    if (err) {
-      console.log(err);
-      return;
-    }
-    console.log(body);
-  });
   response.json({
     'text': 'Order confirmed'
   });
-});
-
-
-app.get('/auth', (req, res) => {
-  const client_id = req.query.client_id;
-  const redirect_uri = req.query.redirect_uri;
-  const state = req.query.state;
-  const response_type = req.query.response_type;
-
-  if (!client_id == config.CLIENT_ID) {
-
-  }
-
-  if (!redirect_uri.match(/oauth-redirect\.googleusercontent\.com\/r\/.*/)) {
-
-  }
 });
 
 // app.use(basicAuth({
@@ -125,7 +86,7 @@ app.post('/', (request, response) => {
     source: ""
   }
   dashbot.logOutgoing(request.body, sampleResponse);
-  response.json(sampleResponse);
+  //response.json(sampleResponse);
 });
 
 app.post('/talk_user', (request, response) => {

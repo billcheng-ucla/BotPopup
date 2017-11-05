@@ -17,52 +17,57 @@ const Transactions = require('actions-on-google').Transactions.TransactionValues
 const OrderUpdate = require('actions-on-google').Transactions.OrderUpdate;
 const key = require('./config/ga_key.json');
 
-let jwtClient = new google.auth.JWT(
-  key.client_email,
-  null,
-  key.private_key,
-  ['https://www.googleapis.com/auth/actions.fulfillment.conversation'],
-  null
-);
 
-jwtClient.authorize(function (err, tokens) {
-  if (err) {
-    console.log(err);
-    return;
-  }
+const orderUpdate = () => {
+  let jwtClient = new google.auth.JWT(
+    key.client_email,
+    null,
+    key.private_key,
+    ['https://www.googleapis.com/auth/actions.fulfillment.conversation'],
+    null
+  );
 
-  const currentTime = Math.ceil(Date.now() / 1000);
-
-  // ID of the order to update
-  let actionOrderId = '<UNIQUE_ORDER_ID>';
-
-  /* CANCELLED, FULFILLED, REJECTED, or RETURNED
-   are the states that we notify via push, and only once per state change */
-
-  let orderUpdate = new OrderUpdate(actionOrderId, false)
-    .setOrderState(Transactions.OrderState.FULFILLED,
-      'Order has been delivered!')
-    .setUpdateTime(currentTime);
-
-  let bearer = 'Bearer ' + tokens.access_token;
-  let options = {
-    method: 'POST',
-    url: 'https://actions.googleapis.com/v2/conversations:send',
-    headers: {
-      'Authorization': bearer
-    },
-    body: {
-      'custom_push_message': {
-        'order_update': orderUpdate
-      }
-    },
-    json: true
-  };
-  request.post(options, function (err, httpResponse, body) {
+  jwtClient.authorize(function (err, tokens) {
     if (err) {
       console.log(err);
       return;
     }
-    console.log(body);
+
+    const currentTime = Math.ceil(Date.now() / 1000);
+
+    // ID of the order to update
+    let actionOrderId = '1234';
+
+    /* CANCELLED, FULFILLED, REJECTED, or RETURNED
+   are the states that we notify via push, and only once per state change */
+
+    let orderUpdate = new OrderUpdate(actionOrderId, false)
+      .setOrderState(Transactions.OrderState.FULFILLED,
+        'Order has been delivered!')
+      .setUpdateTime(currentTime);
+
+    let bearer = 'Bearer ' + tokens.access_token;
+    let options = {
+      method: 'POST',
+      url: 'https://actions.googleapis.com/v2/conversations:send',
+      headers: {
+        'Authorization': bearer
+      },
+      body: {
+        'custom_push_message': {
+          'order_update': orderUpdate
+        }
+      },
+      json: true
+    };
+    request.post(options, function (err, httpResponse, body) {
+      if (err) {
+        console.log(err);
+        return;
+      }
+      console.log(body);
+    });
   });
-});
+};
+
+module.exports = orderUpdate;
