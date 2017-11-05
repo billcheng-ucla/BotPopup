@@ -5,6 +5,7 @@ const basicAuth = require('express-basic-auth');
 const dashbot = require('dashbot')(config.DASHBOT_API_KEY).google;
 const bodyParser = require('body-parser');
 const slackHelper = require('./slack_helper');
+const request = require('request');
 
 console.log('BotPopup initiated');
 app.use(bodyParser.json());
@@ -16,10 +17,40 @@ app.get('/', (request, response) => {
   response.send('hello world. but this is not the asdf');
 });
 
-app.post('/confirm_order', (request, response) => {
+app.post('/confirm_order', (req, response) => {
   response.json({
     'text': 'Order confirmed'
   });
+
+  const messageToGA = {
+    event:{
+      name: "talk_user",
+      data:{
+        sessionId: req.callback_id
+      }
+    }
+  };
+
+  request.post(
+    {
+      method: 'POST',
+      url: config.DIALOGFLOW_URL,
+      headers: {
+        'Authorization': `Bearer ${config.DIALOGFLOW_ACCESS_TOKEN}`,
+        'content-type': 'application/json'
+      },
+      body: JSON.stringify(messageToGA)
+    },
+    (error, response, body) => {
+      if (!error && response.statusCode == 200) {
+        console.log('success');
+        console.log(body)
+      } else {
+        console.error('error');
+        console.error(error);
+      }
+    }
+  );
 });
 
 app.use(basicAuth({
