@@ -70,44 +70,49 @@ app.get('/auth', (req, res) => {
   }
 });
 
-app.use(basicAuth({
-  users: { 'admin': 'supersecret' }
-}));
+// app.use(basicAuth({
+//   users: {
+//     'admin': 'supersecret'
+//   }
+// }));
 
 app.post('/', (request, response) => {
+  // Fullfillment endpoint DialogFlow calls after 'coffee_order' intent
+  // It sends the order to slack and create the order in Google Actions Transactions
+  const dialogFlow = new DialogflowApp({ request, response });
+  let order = dialogFlow.buildOrder('1234');
+  dialogFlow.askForTransactionDecision(order);
+
   const payload = request;
   slackHelper({
     "text": "A customer just ordered a coffee. Please confirm.",
-    "attachments": [
-      {
-        "text": "Confirm Order?",
-        "fallback": "Failed to confirm order",
-        "callback_id": 'order_callback_id',
-        "color": "#3AA3E3",
-        "attachment_type": "default",
-        "actions": [
-          {
-            "name": "order",
-            "text": "Confirm",
-            "type": "button",
-            "value": "confirm"
-          },
-          {
-            "name": "order",
-            "text": "Cancel",
-            "style": "danger",
-            "type": "button",
-            "value": "cancel",
-            "confirm": {
-              "title": "Are you sure?",
-              "text": "The customer will be very dissapointed... :(",
-              "ok_text": "Yes",
-              "dismiss_text": "No"
-            }
+    "attachments": [{
+      "text": "Confirm Order?",
+      "fallback": "Failed to confirm order",
+      "callback_id": 'order_callback_id',
+      "color": "#3AA3E3",
+      "attachment_type": "default",
+      "actions": [{
+          "name": "order",
+          "text": "Confirm",
+          "type": "button",
+          "value": "confirm"
+        },
+        {
+          "name": "order",
+          "text": "Cancel",
+          "style": "danger",
+          "type": "button",
+          "value": "cancel",
+          "confirm": {
+            "title": "Are you sure?",
+            "text": "The customer will be very dissapointed... :(",
+            "ok_text": "Yes",
+            "dismiss_text": "No"
           }
-        ]
-      }
-    ]
+        }
+      ]
+    }]
   });
 
 
@@ -133,7 +138,9 @@ app.post('/cancel_order', (request, response) => {
 });
 
 app.use(basicAuth({
-  users: { 'admin': 'supersecret' }
+  users: {
+    'admin': 'supersecret'
+  }
 }));
 
 app.listen(config.HTTP_PORT, () => console.log(`BotPopup listening on port ${config.HTTP_PORT}!`))
